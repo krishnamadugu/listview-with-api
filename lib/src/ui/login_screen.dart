@@ -1,13 +1,17 @@
-import 'package:demo/src/ui/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'home_screen.dart';
+
 GlobalKey<FormState> formkey = GlobalKey<FormState>();
 String snack_bar = "";
-late SharedPreferences localStorage;
+SharedPreferences? localStorage;
 TextEditingController emailController = new TextEditingController();
 TextEditingController pwdController = new TextEditingController();
+// RegExp regex = RegExp(r"^(?=.\d)(?=.[a-z])(?=.[A-Z])");
+RegExp regex = RegExp(
+    r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*(),.?":{}|<>]).{6,}$');
 
 final snack = SnackBar(content: Text(snack_bar));
 bool vis = true;
@@ -132,8 +136,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     if (password.isEmpty) {
                       return "password can't be empty";
-                    } else if (password.length < 6) {
-                      return "password length should be greater than 6";
+                    } else if (!regex.hasMatch(password)) {
+                      return "Enter valid password";
                     }
                     // else if ((hasUppercase &&
                     //         hasDigits &&
@@ -199,15 +203,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: MediaQuery.of(context).size.width,
                   child: TextButton(
                     onPressed: () {
-                      if (formkey.currentState!.validate()) {}
-                      save();
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (_) {
-                        return HomePage(
-                          email: '${localStorage.get('email')}',
-                          pwd: '${localStorage.get('password')}',
-                        );
-                      }));
+                      if (formkey.currentState!.validate()) {
+                        setState(() {
+                          save();
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (_) {
+                            return HomePage(
+                              email: '${localStorage?.get('email')}',
+                              pwd: '${localStorage?.get('password')}',
+                            );
+                          }));
+                        });
+                      }
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -268,8 +275,8 @@ class _LoginScreenState extends State<LoginScreen> {
 save() async {
   await LoginScreen.init();
 
-  localStorage.setString('email', emailController.text.toString());
-  localStorage.setString('password', pwdController.text.toString());
+  localStorage?.setString('email', emailController.text.toString());
+  localStorage?.setString('password', pwdController.text.toString());
 }
 
 //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

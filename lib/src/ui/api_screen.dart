@@ -24,38 +24,34 @@ class _ApiScreenState extends State<ApiScreen> {
 
   @override
   Widget build(BuildContext context) {
-    timeDilation = 5.0;
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Api Screen"),
-        ),
-        body: ListView.builder(
-          itemCount: userList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Hero(
-              tag: "krishna" + index.toString(),
-              child: ListTile(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AnimationScreen(
-                                name:
-                                    "${userList[index].firstName} ${userList[index].lastName}",
-                                email: "${userList[index].email}",
-                                img: "${userList[index].image}",
-                              )));
-                },
-                // title: snapshot.data[index].users[index].firstName,
-                title: Text(
-                    "${userList[index].firstName} ${userList[index].lastName}" ??
-                        ""),
-                subtitle: Text("${userList[index].email}" ?? ""),
-                leading: Image.network("${userList[index].image}"),
-              ),
-            );
-          },
-        ));
+    timeDilation = 1.0;
+    return Container(
+        child: ListView.builder(
+      itemCount: userList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Hero(
+          tag: "krishna" + index.toString(),
+          child: ListTile(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AnimationScreen(
+                            name:
+                                "${userList[index].firstName} ${userList[index].lastName}",
+                            email: "${userList[index].email}",
+                            img: "${userList[index].image}",
+                          )));
+            },
+            // title: snapshot.data[index].users[index].firstName,
+            title: Text(
+                "${userList[index].firstName ?? ""} ${userList[index].lastName ?? ""}"),
+            subtitle: Text(userList[index].email ?? ""),
+            leading: Image.network("${userList[index].image}"),
+          ),
+        );
+      },
+    ));
   }
 
   fetchData() async {
